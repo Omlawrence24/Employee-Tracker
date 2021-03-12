@@ -1,11 +1,12 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
-// const fs = require("fs");
+  require("console.table");
 
 const connection = mysql.createConnection({
     host: "localhost",
 
     port: 3306,
+
 
     user: "root",
 
@@ -105,7 +106,7 @@ function addEmployee() {
         },
         {
             type: "input",
-            message: "What is the Employee's Role? ",
+            message: "What is the Employee's Role Id? ",
             name: "roleId",
         },
         {
@@ -114,7 +115,37 @@ function addEmployee() {
             name: "managerId",
         },
 
-     ]).then(
+    ]).then((res) = () => {
+            
+            console.log('Lets Create a new Employee ...\n');
+            const query = connection.query('INSERT INTO employee SET ?',
+            {
+               
+        'first_name': 'reponse.fname',
+        'last_name': 'response.lname',
+        'role_id': 'response.roleId' ,
+        'manager_id': 'reponse.managerId' ,
+            },
+            (err, res) => {
+                if (err) throw err;
+                else {
+                    console.log(`${res.affectedRows} employee updated!\n`);
+                    console.log(response);
+                    start();
+                    
+                }
+                
+            })
+        });
+    };
+    
+    // {
+    //     'first_name': 'reponse.fname',
+    //     'last_name': 'response.lname',
+    //     'role_id': 'response.roleId' ,
+    //     'manager_id': 'reponse.managerId' ,
+    // },
+    
     // //     function ({ first_name, last_name, role_id, manager_id }) {
     // // //     connection.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ? ",
     // // //         (response.fname, response.lname, response.roleId , response.managerId), function (err, response) {
@@ -123,29 +154,6 @@ function addEmployee() {
     // // //         }
     // // //     )
     // // // }
-
-         (response) = () => {
-        console.log(response)
-        console.log('Lets Create a new Employee ...\n');
-        const query = connection.query('INSERT INTO employee SET ?',
-            {
-                first_name : response.fname,
-                last_name : response.lname,
-                role_id : response.roleId,
-                manager_id : response.managerId,
-            },
-            (err, response) => {
-            if (err) throw err;
-            else {
-                //look at activities 13 and 14 to see how they formatted the results in the console
-                console.log(response);
-                start();
-       
-                      }
-     });
-     
-    
-     
 // const allEmployees = () => {
 //     const query = connection.query('SELECT * FROM employee', (err, result) => {
 //         if (err) throw err;
@@ -157,7 +165,11 @@ function addEmployee() {
 //     });
 // };
 
-     
+
+const addDepartment = () => {
+
+}
+
 
 // Connect to the DB
 connection.connect((err) => {
