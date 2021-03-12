@@ -41,7 +41,7 @@ const start = () => {
             } else if (response.intro === 'Add Employee') {
                 addEmployee();
             } else if (response.intro === 'Add Departments') {
-                addEmployee();
+                addDepartment();
             } else if (response.intro === 'Add Roles') {
                 addRole();
             } else if (response.intro === 'Update Employee Role') {
@@ -113,36 +113,39 @@ function addEmployee() {
             message: "What is the Manager's Id?",
             name: "managerId",
         },
-    ]).then(function ({ first_name, last_name, role_id, manager_id }) {
-        connection.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ? ",
-            (response.fname, response.lname, response.roleId , response.managerId), function (err, response) {
-                if (err) throw err;
 
-            }
-        )
-    }
+     ]).then(
+    // //     function ({ first_name, last_name, role_id, manager_id }) {
+    // // //     connection.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ? ",
+    // // //         (response.fname, response.lname, response.roleId , response.managerId), function (err, response) {
+    // // //             if (err) throw err;
 
-        // (response) = () => {
-    //     console.log(response)
-    //     console.log('Lets Create a new Employee ...\n');
-    //     const query = connection.query('INSERT INTO employee SET ?',
-    //         {
-    //             first_name = response.fname,
-    //             last_name = response.lname,
-    //             role_id = response.roleId,
-    //             manager_id = response.managerId,
-    //         },
-    //         (err, response) => {
-    //         if (err) throw err;
-    //         else {
-    //             //look at activities 13 and 14 to see how they formatted the results in the console
-    //             console.log(response);
-    //             start();
-    //         }
-    //     });
+    // // //         }
+    // // //     )
+    // // // }
 
-
-
+         (response) = () => {
+        console.log(response)
+        console.log('Lets Create a new Employee ...\n');
+        const query = connection.query('INSERT INTO employee SET ?',
+            {
+                first_name : response.fname,
+                last_name : response.lname,
+                role_id : response.roleId,
+                manager_id : response.managerId,
+            },
+            (err, response) => {
+            if (err) throw err;
+            else {
+                //look at activities 13 and 14 to see how they formatted the results in the console
+                console.log(response);
+                start();
+       
+                      }
+     });
+     
+    
+     
 // const allEmployees = () => {
 //     const query = connection.query('SELECT * FROM employee', (err, result) => {
 //         if (err) throw err;
@@ -154,11 +157,11 @@ function addEmployee() {
 //     });
 // };
 
-);
+     
 
 // Connect to the DB
 connection.connect((err) => {
     if (err) throw err;
     console.log(`connected as id ${connection.threadId}\n`);
     start();
-})};
+});
