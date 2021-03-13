@@ -28,8 +28,8 @@ const start = () => {
             type: 'list',
             message: 'What would you like to do?',
             choices: ['View All Employees',
-                'View All Employees By Department',
-                'View All Employees By Roles',
+                'View All Department',
+                'View All Roles',
                 'Add Employee',
                 'Add Departments',
                 'Add Roles',
@@ -126,64 +126,87 @@ function addEmployee() {
         console.log('Lets Create a new Employee ...\n');
         connection.query('INSERT INTO employee SET ?',
 
-
-
             {
                 first_name: response.fname,
                 last_name: response.lname,
                 role_id: response.roleId,
                 manager_id: response.managerId,
             },
-        );
 
-        function e(error) {
-            if (error) throw error;
-            // console.log(`${res.affectedRows} employee updated!\n`);
-            console.log("Employee added !");
-            console.log(cTable);
-            start();
-            query();
-            e();
-        }
+            function (error) {
+                if (error) throw error;
+                // console.log(`${res.affectedRows} employee updated!\n`);
+                console.log("Employee added !");
+
+                start();
+
+
+            }
+        )
 
     })
 
 }
 
 
-
+// This function adds new departments to tables
 function addDepartment() {
 
     return inquirer.prompt([
-        //we also need to add questions for name, email, id
+
         {
-            type: "list",
-            message: "What is your Employee's first Name?",
+            type: "input",
+            message: "What is the Name of the Department you would like to add?",
             name: "department",
-            choices: ["Marketing", "Front-End", "Back-End", "Management"]
         },
     ]).then(function (response) {
 
-        console.log('Lets Create a new Employee ...\n');
-        connection.query('INSERT INTO employee SET ?',
+        console.log('Lets add a new Department...\n');
+        connection.query('INSERT INTO department SET ?',
             {
-                first_name: response.fname,
-                last_name: response.lname,
-                role_id: response.roleId,
-                manager_id: response.managerId,
+                name: response.department,
             },
+
+            function (error) {
+                if (error) throw error;
+                
+                    console.log("Department added!");
+                    start();
+            });
+
+    });
+}
+
+
+
+// This function adds new departments to tables
+function addRole() {
+
+    return inquirer.prompt([
+
+        {
+            type: "input",
+            message: "What role would you like to add",
+            name: "role",
+        },
+    ]).then(function (response) {
+
+        console.log('Lets add a new Role...\n');
+        connection.query('INSERT INTO employee_role SET ?',
+            {
+                name: response.role,
+            },
+
             function (error) {
                 if (error)
                     throw error;
-                // console.log(`${res.affectedRows} employee updated!\n`);
-                console.log("Employee added !");
+                console.log("Role added!");
                 start();
                 query();
             });
 
     });
 }
-
 
 
 
