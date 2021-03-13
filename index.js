@@ -1,24 +1,28 @@
+// connection brought in to link to My SQL
 const mysql = require("mysql");
+// connection brought in to link inquirer which enables prompts 
 const inquirer = require("inquirer");
-  require("console.table");
-
+// connection brought in to link to change console display for tables 
+const cTable = require('console.table');
+//enables connection to sql with login info and port
+//make sure there is no other server open on port 
 const connection = mysql.createConnection({
     host: "localhost",
 
     port: 3306,
-
-
+    // connect to SQL via server info!!!
     user: "root",
-
+    // password designated by developer
     password: "root",
-
+    // databease connection to
     database: "employee_tracker_DB",
 
 });
 
-
+// The Initial prompt triggered to start program
 const start = () => {
     inquirer
+        //this will allow the user to have several options to choose from
         .prompt({
             name: 'intro',
             type: 'list',
@@ -29,10 +33,12 @@ const start = () => {
                 'Add Employee',
                 'Add Departments',
                 'Add Roles',
-                'Update Employee Manager'
+                'Update Employee Roles'
             ],
+
         }).then((response) => {
             console.log(response);
+            //Each Function will operate a specic action choosen above
             if (response.intro === 'View All Employees') {
                 allEmployees();
             } else if (response.intro === 'View All Departments') {
@@ -48,38 +54,39 @@ const start = () => {
             } else if (response.intro === 'Update Employee Role') {
                 updateRole();
             } else {
-                //our default
+                //our default/ if they choose nothing thsi will end connection 
                 connection.end();
             }
 
         });
 };
 
-
+// This function will show all employees in table
 const allEmployees = () => {
     const query = connection.query('SELECT * FROM employee', (err, result) => {
         if (err) throw err;
         else {
-            //look at activities 13 and 14 to see how they formatted the results in the console
+
             console.log(result);
+            //THis ensures that they are prompted to the beginning after every loop
             start();
         }
     });
 };
 
-
+//This function shows all departments
 const allDepartments = () => {
     const query = connection.query('SELECT * FROM department', (err, result) => {
         if (err) throw err;
         else {
-            //look at activities 13 and 14 to see how they formatted the results in the console
+
             console.log(result);
             start();
         }
     });
 };
 
-
+//THis functions shows all rows 
 const allRoles = () => {
     const query = connection.query('SELECT * FROM employee_role', (err, result) => {
         if (err) throw err;
@@ -90,10 +97,10 @@ const allRoles = () => {
         }
     });
 };
-
+// This function add new employees 
 function addEmployee() {
     return inquirer.prompt([
-        //we also need to add questions for name, email, id
+        // employee prompt
         {
             type: "input",
             message: "What is your Employee's first Name?",
@@ -115,60 +122,70 @@ function addEmployee() {
             name: "managerId",
         },
 
-    ]).then((res) = () => {
-            
-            console.log('Lets Create a new Employee ...\n');
-            const query = connection.query('INSERT INTO employee SET ?',
+    ]).then(function (response) {
+        console.log('Lets Create a new Employee ...\n');
+        connection.query('INSERT INTO employee SET ?',
+
+
+
             {
-               
-        'first_name': 'reponse.fname',
-        'last_name': 'response.lname',
-        'role_id': 'response.roleId' ,
-        'manager_id': 'reponse.managerId' ,
+                first_name: response.fname,
+                last_name: response.lname,
+                role_id: response.roleId,
+                manager_id: response.managerId,
             },
-            (err, res) => {
-                if (err) throw err;
-                else {
-                    console.log(`${res.affectedRows} employee updated!\n`);
-                    console.log(response);
-                    start();
-                    
-                }
-                
-            })
-        });
-    };
-    
-    // {
-    //     'first_name': 'reponse.fname',
-    //     'last_name': 'response.lname',
-    //     'role_id': 'response.roleId' ,
-    //     'manager_id': 'reponse.managerId' ,
-    // },
-    
-    // //     function ({ first_name, last_name, role_id, manager_id }) {
-    // // //     connection.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ? ",
-    // // //         (response.fname, response.lname, response.roleId , response.managerId), function (err, response) {
-    // // //             if (err) throw err;
+        );
 
-    // // //         }
-    // // //     )
-    // // // }
-// const allEmployees = () => {
-//     const query = connection.query('SELECT * FROM employee', (err, result) => {
-//         if (err) throw err;
-//         else {
-//             //look at activities 13 and 14 to see how they formatted the results in the console
-//             console.log(result);
-//             start();
-//         }
-//     });
-// };
+        function e(error) {
+            if (error) throw error;
+            // console.log(`${res.affectedRows} employee updated!\n`);
+            console.log("Employee added !");
+            console.log(cTable);
+            start();
+            query();
+            e();
+        }
 
-
-const addDepartment = () => {
+    })
 
 }
+
+
+
+function addDepartment() {
+
+    return inquirer.prompt([
+        //we also need to add questions for name, email, id
+        {
+            type: "list",
+            message: "What is your Employee's first Name?",
+            name: "department",
+            choices: ["Marketing", "Front-End", "Back-End", "Management"]
+        },
+    ]).then(function (response) {
+
+        console.log('Lets Create a new Employee ...\n');
+        connection.query('INSERT INTO employee SET ?',
+            {
+                first_name: response.fname,
+                last_name: response.lname,
+                role_id: response.roleId,
+                manager_id: response.managerId,
+            },
+            function (error) {
+                if (error)
+                    throw error;
+                // console.log(`${res.affectedRows} employee updated!\n`);
+                console.log("Employee added !");
+                start();
+                query();
+            });
+
+    });
+}
+
+
+
 
 
 // Connect to the DB
